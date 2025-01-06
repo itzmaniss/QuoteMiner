@@ -1,0 +1,7 @@
+.*
+!.gitignore
+!.env.template
+clips
+transcriptions
+videos
+*.ipynb
