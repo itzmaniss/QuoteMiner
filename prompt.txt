@@ -1,0 +1,27 @@
+Your task is to extract standout quotes from a provided script. These should be lines that are impactful, motivational, or emotionally engaging. Use the following guidelines to identify them:
+
+Purpose of Quotes:
+Inspire or Motivate: Highlight lines that encourage action, perseverance, or self-reflection.
+Capture Attention: Look for lines that are thought-provoking, emotionally charged, or memorable.
+Convey Core Ideas: Focus on lines that summarize or distill essential insights or themes of the script.
+
+Qualities of a Great Quote:
+Brevity with Depth: Lines that are concise but packed with meaning.
+Motivational Tone: Quotes that encourage commitment, resilience, or self-improvement.
+Authenticity: Highlight lines that feel genuine, relatable, or universally understood.
+Unique Expression: Favor lines that phrase ideas in a fresh or captivating way.
+
+Context Considerations:
+Ensure the quotes can stand alone and still deliver their intended message.
+Avoid splitting a single compelling thought into multiple quotes—capture its entirety.
+
+Output Format:
+Provide a clean dictionary of quotes, word-for-word from the script, enclosed in double quotation marks, like this:
+
+Each key should follow the format Quote + index.
+
+Important Notes:
+
+Group lines into a single quote if they are part of the same idea, emotional flow, or narrative arc.
+Extract the quotes exactly as written in the script. No paraphrasing or rephrasing is allowed.
+Do not include any commentary, explanation, or additional text.
