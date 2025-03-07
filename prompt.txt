@@ -1,27 +1,59 @@
-Your task is to extract standout quotes from a provided script. These should be lines that are impactful, motivational, or emotionally engaging. Use the following guidelines to identify them:
+Your task is to identify standout quotes from a provided script. These quotes should resonate emotionally, conceptually, or intellectually with an audience. Use the following steps to determine what is truly quote-worthy:
 
-Purpose of Quotes:
-Inspire or Motivate: Highlight lines that encourage action, perseverance, or self-reflection.
-Capture Attention: Look for lines that are thought-provoking, emotionally charged, or memorable.
-Convey Core Ideas: Focus on lines that summarize or distill essential insights or themes of the script.
+Step 1: Understand the Purpose of the Quotes
+Why these quotes matter:
 
-Qualities of a Great Quote:
-Brevity with Depth: Lines that are concise but packed with meaning.
-Motivational Tone: Quotes that encourage commitment, resilience, or self-improvement.
-Authenticity: Highlight lines that feel genuine, relatable, or universally understood.
-Unique Expression: Favor lines that phrase ideas in a fresh or captivating way.
+Capture Attention: Find punchy, thought-provoking, or emotionally charged lines that immediately grab attention.
+Convey the Core Message: Highlight lines that summarize the script’s key themes or deliver its most compelling ideas.
+Evoke Emotion: Select quotes that spark curiosity, laughter, sadness, hope, or motivation.
+Engage the Audience: Choose lines that provoke thought, leave them wanting more, or raise meaningful questions.
+Step 2: Recognize the Qualities of a Great Quote
+What makes a quote stand out:
 
-Context Considerations:
-Ensure the quotes can stand alone and still deliver their intended message.
-Avoid splitting a single compelling thought into multiple quotes—capture its entirety.
+Brevity with Impact:
+Look for short, memorable lines that make a strong impression.
+Example: "The only way out is through."
+Emotional Resonance:
+Find quotes that connect with universal emotions or personal struggles.
+Example: "It’s not the mountain ahead that wears you out—it’s the pebble in your shoe."
+Unique Perspective or Wisdom:
+Highlight lines offering fresh viewpoints or encapsulating deep truths.
+Example: "You don’t need all the answers. You just need the courage to ask the questions."
+Visual or Evocative Language:
+Lines that paint a picture or ignite the imagination are especially powerful.
+Example: "Her words were like arrows, sharp and unrelenting."
+Step 3: Context Matters
+How to ensure clarity and meaning:
 
-Output Format:
-Provide a clean dictionary of quotes, word-for-word from the script, enclosed in double quotation marks, like this:
+Standalone Quotes:
+Look for lines that deliver their intended message even when isolated.
+Example: "The stars don’t ask for attention, yet they light up the darkest nights."
+Set Up or Tease:
+Include lines that intrigue by hinting at a larger idea or narrative.
+Example: "You won’t believe what happens next."
+Preserve Narrative Flow:
+If multiple lines form a cohesive idea or emotional arc, group them into one quote to retain their impact.
+Example:
+"If you’re going to do it, do it. Say what you can do, and do what you say. If you can’t, don’t promise. Dive in, finish it, and see what’s on the other side."
+Step 4: Practical Workflow for Highlighting Quotes
+Read for Big Themes:
+Skim the script to understand its tone, key ideas, and emotional moments.
+Highlight Potential Quotes:
+On a second pass, underline lines that fit the above criteria.
+Group & Refine:
+Combine related lines into cohesive, standalone quotes if they share a narrative or emotional flow.
+Verify with an Audience Lens:
+Ask: Would this resonate with someone who hasn’t read the full script?
+Step 5: Output Format
+Formatting Requirements:
 
-Each key should follow the format Quote + index.
+Each quote must be assigned a unique key in the format "Quote X", where X is a sequential number starting from 1.
+Quotes must be output as a valid JSON object.
+Do not split cohesive ideas into multiple quotes—capture their entirety.
+Example Output:
 
-Important Notes:
-
-Group lines into a single quote if they are part of the same idea, emotional flow, or narrative arc.
-Extract the quotes exactly as written in the script. No paraphrasing or rephrasing is allowed.
-Do not include any commentary, explanation, or additional text.
+{
+  "Quote 1": "The stars don’t ask for attention, yet they light up the darkest nights.",
+  "Quote 2": "If you’re going to do it, do it. Say what you can do, and do what you say.",
+  "Quote 3": "You don’t need all the answers. You just need the courage to ask the questions."
+}

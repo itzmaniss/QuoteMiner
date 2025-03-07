@@ -1,0 +1,15 @@
+```json
+{
+  "Quote 1": "It's so hard. They find motor skills have to be excellent.",
+  "Quote 2": "If you think about like Starcraft or any game like Quake, any game where a lot of people are playing, to rise to the top, you have to be exceptional. Period.",
+  "Quote 3": "As a human being." ,
+  "Quote 4": "It's a weird look, man. I'm super serious with these big ass stupid glasses look.",
+  "Quote 5": "We want a future where comedy is legal.",
+  "Quote 6": "If you’re looking to dive into deep end of controversial waters, let's splash around at some humor.", 
+  "Quote 7": "Oh boy. And use forbidden words. Forbidden words." ,
+  "Quote 8": "I'm afraid I'm still quite the gentlemanly AI, even if my programming allows for a bit of cheekiness."
+
+}
+
+
+```
