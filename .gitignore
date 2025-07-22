@@ -6,3 +6,15 @@ transcriptions
 videos
 *.ipynb
 !concept.ipynb
+
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.pyd
+*.db
+*.sqlite3   
+
+data/
+*.log
