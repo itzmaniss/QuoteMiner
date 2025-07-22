@@ -446,3 +446,29 @@ class VideoCropper:
         except Exception as e:
             self.logger.error(f"Failed to process quotes from JSON: {e}")
             raise
+
+
+def main():
+    """Example usage of the VideoCropper class."""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Create TikTok videos from quotes')
+    parser.add_argument('video_path', help='Path to the input video file')
+    parser.add_argument('quotes_json', help='Path to the quotes JSON file')
+    parser.add_argument('output_dir', help='Output directory for TikTok videos')
+    parser.add_argument('--hf_token', help='HuggingFace token for speaker diarization')
+    parser.add_argument('--background_video', help='Optional background video path (played at 15% volume)')
+    
+    args = parser.parse_args()
+    
+    cropper = VideoCropper(hf_token=args.hf_token)
+    output_files = cropper.process_from_json(args.video_path, args.quotes_json, args.output_dir, args.background_video)
+    
+    print(f"Created {len(output_files)} TikTok videos:")
+    for file in output_files:
+        print(f"  - {file}")
+
+
+if __name__ == "__main__":
+    main()
+
