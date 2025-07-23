@@ -1,6 +1,7 @@
 .*
 !.gitignore
 !.env.template
+!.python-version
 clips
 transcriptions
 videos

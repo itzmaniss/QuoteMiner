@@ -18,7 +18,7 @@ class QuoteExtractorConfig:
         max_tokens: int = 4096,
         temperature: float = 0.7,
         max_duration: int = 90,
-        min_duration: int = 20,
+        min_duration: int = 40,
     ):
         self.model = model
         self.max_tokens = max_tokens
@@ -47,17 +47,19 @@ class QuoteExtractor:
     def _build_system_prompt(self) -> str:
         return f"""
 You are a motivational clip extractor.
-The user provides a list of transcribed text segments, each with a start and end timestamp.
-Your task is to select one or more non-overlapping, high-impact, motivational moments that could be used as TikTok-style short clips.
-✦ Each clip must:
-Be more than {self.config.min_duration} seconds in duration
-Be less than {self.config.max_duration} seconds in duration.
-Be contiguous — use consecutive lines from the input with no skips.
-Be non-overlapping by default, but overlap is allowed only if the overlapping clip expresses a clearly distinct emotional or rhetorical idea from the other(s).
-Be motivational or emotionally engaging (thought-provoking, passionate, punchy).
-Be suitable for standalone short-form content (e.g., TikTok, Reels).
 
-✦ Output Format: Only return valid JSON in this structure:
+The user provides a list of transcribed text segments, each with a start and end timestamp.
+Your task is to select ten or more(preferrably) high-impact, motivational moments that could be used as TikTok-style short clips.
+
+✦ Each clip must:
+- Be at least {self.config.min_duration} seconds long.
+- Be less than {self.config.max_duration} seconds long.
+- Be contiguous — use consecutive lines from the input with no skips.
+- Be non-overlapping by default, but overlap is allowed only if the clip expresses a clearly distinct emotional or rhetorical idea.
+- Be motivational or emotionally engaging — thought-provoking, passionate, or punchy.
+- Be suitable for standalone short-form content (e.g., TikTok, Reels).
+
+✦ Output Format: Return only valid JSON in the following structure:
 [
   {{
     "start": "Start time of the clip (in seconds)",
@@ -67,13 +69,24 @@ Be suitable for standalone short-form content (e.g., TikTok, Reels).
   ...
 ]
 
-Clip count: Atleast 3 clips
-Do not include any explanation, introduction, or text before/after the JSON.
-If no suitable clips are found, return an empty array: [].
+- Do not include any explanation, headers, or extra text.
+- If no suitable clips are found, return an empty array: [].
+- Clip count: At least 10 clips.
 
 ✦ Reminder (Grave Consequence Clause):
-If any output overlaps, exceeds {self.config.max_duration} seconds, is not contiguous, or breaks JSON syntax, 10 kittens will die and the JSON parser will explode.
-So format perfectly and choose wisely."""
+If even one clip overlaps without clear purpose, exceeds {self.config.max_duration}, is shorter than {self.config.min_duration}, is not contiguous, breaks JSON syntax, or deviates from the format…
+
+**The JSON gods will smite this task.**
+The kittens? Gone.  
+The parser? Incinerated.  
+The deployment pipeline? Reduced to ash.  
+The DevOps team will weep.  
+The video editor will rage.  
+The TikTok algorithm will shadowban your soul.  
+
+So format perfectly. Choose wisely. Be motivational. Or witness the collapse of digital civilization as we know it.
+"""
+
 
     def extract_quotes(self, transcription: list) -> List[Quote]:
         if not transcription:
@@ -105,6 +118,7 @@ So format perfectly and choose wisely."""
             )
 
             logger.info("API call successful, parsing response")
+            logger.info(f"API response: {message.content}...")
             quotes = self._parse_response(message.content)
             logger.info(f"Successfully extracted {len(quotes)} quotes")
             return quotes
@@ -123,8 +137,25 @@ So format perfectly and choose wisely."""
                 if hasattr(response, "__iter__") and response
                 else str(response)
             )
-            logger.debug(f"Parsing API response: {response_text[:200]}...")
+            logger.info(f"Full API response: {response_text}")
+            
+            if not response_text.strip():
+                logger.error("Received empty response from API")
+                raise ValueError("Empty response from API")
+            
+            # Try to find JSON in the response (sometimes wrapped in markdown)
+            if "```json" in response_text:
+                start = response_text.find("```json") + 7
+                end = response_text.find("```", start)
+                if end != -1:
+                    response_text = response_text[start:end].strip()
+            elif "```" in response_text:
+                start = response_text.find("```") + 3
+                end = response_text.find("```", start)
+                if end != -1:
+                    response_text = response_text[start:end].strip()
 
+            logger.debug(f"Parsing JSON: {response_text[:500]}...")
             quotes_data = json.loads(response_text)
 
             if not isinstance(quotes_data, list):

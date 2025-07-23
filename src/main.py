@@ -41,7 +41,7 @@ def ensure_directories_exist():
 
     # Check for critical files
     critical_files = [
-        ".env",  # Environment variables
+        "../.env",  # Environment variables
     ]
 
     for file_path in critical_files:
