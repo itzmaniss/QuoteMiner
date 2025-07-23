@@ -2,6 +2,7 @@ import anthropic
 import dotenv
 import os
 import json
+import re
 from typing import List, Optional
 from models import Quote
 from utils import Logger
@@ -130,6 +131,72 @@ So format perfectly. Choose wisely. Be motivational. Or witness the collapse of 
             logger.error(f"Unexpected error during quote extraction: {str(e)}")
             raise RuntimeError(f"Failed to extract quotes: {str(e)}")
 
+    def _extract_json_from_response(self, response_text: str) -> str:
+        """Extract JSON from response using multiple strategies."""
+        logger.debug("Attempting to extract JSON from response")
+        
+        # Strategy 1: Look for markdown code blocks with json language
+        json_block_pattern = r'```(?:json)?\s*(\[.*?\])\s*```'
+        match = re.search(json_block_pattern, response_text, re.DOTALL)
+        if match:
+            logger.debug("Found JSON in markdown code block")
+            return match.group(1).strip()
+        
+        # Strategy 2: Look for JSON array patterns (more aggressive)
+        json_array_pattern = r'(\[(?:[^[\]]+|\[[^[\]]*\])*\])'
+        matches = re.findall(json_array_pattern, response_text, re.DOTALL)
+        
+        for potential_json in matches:
+            try:
+                # Test if it's valid JSON by parsing it
+                json.loads(potential_json)
+                logger.debug("Found valid JSON array pattern")
+                return potential_json.strip()
+            except json.JSONDecodeError:
+                continue
+        
+        # Strategy 3: Extract everything between first [ and last ]
+        first_bracket = response_text.find('[')
+        last_bracket = response_text.rfind(']')
+        if first_bracket != -1 and last_bracket != -1 and first_bracket < last_bracket:
+            potential_json = response_text[first_bracket:last_bracket + 1]
+            try:
+                json.loads(potential_json)
+                logger.debug("Found JSON using bracket extraction")
+                return potential_json.strip()
+            except json.JSONDecodeError:
+                pass
+        
+        # Strategy 4: Save to file for debugging and return original text
+        logger.warning("No JSON extraction strategy worked, saving response for debugging")
+        self._save_failed_response(response_text)
+        return response_text.strip()
+
+    def _save_failed_response(self, response_text: str) -> None:
+        """Save failed API response to file for debugging purposes."""
+        import datetime
+        
+        # Create debug directory if it doesn't exist
+        debug_dir = "debug_responses"
+        os.makedirs(debug_dir, exist_ok=True)
+        
+        # Generate timestamp for unique filename
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"failed_response_{timestamp}.txt"
+        filepath = os.path.join(debug_dir, filename)
+        
+        try:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write("=== FAILED JSON EXTRACTION ===\n")
+                f.write(f"Timestamp: {datetime.datetime.now().isoformat()}\n")
+                f.write(f"Model: {self.config.model}\n")
+                f.write("="*50 + "\n\n")
+                f.write(response_text)
+            
+            logger.info(f"Failed response saved to: {filepath}")
+        except Exception as e:
+            logger.error(f"Failed to save debug response: {str(e)}")
+
     def _parse_response(self, response) -> List[Quote]:
         try:
             response_text = (
@@ -143,17 +210,8 @@ So format perfectly. Choose wisely. Be motivational. Or witness the collapse of 
                 logger.error("Received empty response from API")
                 raise ValueError("Empty response from API")
             
-            # Try to find JSON in the response (sometimes wrapped in markdown)
-            if "```json" in response_text:
-                start = response_text.find("```json") + 7
-                end = response_text.find("```", start)
-                if end != -1:
-                    response_text = response_text[start:end].strip()
-            elif "```" in response_text:
-                start = response_text.find("```") + 3
-                end = response_text.find("```", start)
-                if end != -1:
-                    response_text = response_text[start:end].strip()
+            # Extract JSON using multiple strategies
+            response_text = self._extract_json_from_response(response_text)
 
             logger.debug(f"Parsing JSON: {response_text[:500]}...")
             quotes_data = json.loads(response_text)
